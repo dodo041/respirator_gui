@@ -16,7 +16,13 @@ class NumericalInstrument(QWidget):
         super(NumericalInstrument, self).__init__()
         self._build_numerical_instrument(instrumentLabel)
 
-    def _build_numerical_instrument(self, instrumentLabel: str):
+    def _build_numerical_instrument(self, instrumentLabel: str) -> None:
+        """
+        Build a numerical LCD instrument.
+
+        :param instrumentLabel: Description to be displayed
+        :return: None
+        """
         widget = QWidget(self)
         layout = QVBoxLayout(widget)
         title = QLabel(instrumentLabel)
