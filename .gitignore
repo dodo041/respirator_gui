@@ -1,0 +1,9 @@
+# IDE folders
+.idea
+.vscode
+
+# Python virtual environment
+env
+
+# Python bytecode cache
+__pycache__
