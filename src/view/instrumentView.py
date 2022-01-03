@@ -1,4 +1,4 @@
-from PySide6.QtCore import QSize
+from PySide6.QtCore import QSize, Slot
 from PySide6.QtWidgets import QLCDNumber, QLabel, QVBoxLayout, QWidget
 
 
@@ -36,3 +36,7 @@ class NumericalInstrument(QWidget):
 
         layout.addWidget(self.lcd)
         layout.addWidget(title)
+
+    @Slot(float)
+    def on_modified_data(self, value: float):
+        self.lcd.display(value)
