@@ -3,7 +3,7 @@ from random import randrange, uniform
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QTimer
 from src.view.mainView import RespiratorMainWindow
-from src.view.presetsView import PresetsTableView
+from src.view.presetsView import PresetsViewWindow
 from src.model.sensorDataModel import SensorDataModel
 
 model = SensorDataModel()
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     main_window = RespiratorMainWindow()
     main_window.show()
 
-    p = PresetsTableView()
+    p = PresetsViewWindow()
     p.show()
 
     model.modified_air_temp_data.connect(main_window.air_temp_instrument.on_modified_data)
