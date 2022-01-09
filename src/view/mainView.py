@@ -1,8 +1,12 @@
 from src.view.instrumentView import NumericalInstrument
-from PySide6.QtWidgets import QGridLayout, QLabel, QMainWindow, QWidget
+from PySide6.QtWidgets import QGridLayout, QLabel, QMainWindow, QWidget, QMenuBar, QStatusBar
 
 
 class RespiratorMainWindow(QMainWindow):
+
+    menu_bar = QMenuBar
+    status_bar = QStatusBar
+
     animal_temp_instrument = NumericalInstrument
     heatbed_temp_instrument = NumericalInstrument
     air_temp_instrument = NumericalInstrument
@@ -24,13 +28,31 @@ class RespiratorMainWindow(QMainWindow):
         self.num_instruments_layout.setSpacing(0)
         self.num_instruments_container.setLayout(self.num_instruments_layout)
 
+        self._build_menu_bar()
+        self._build_status_bar()
         self._build_numerical_instrument_view()
+
+    def _build_menu_bar(self):
+        """
+        Builds the top menu bar for accessing different functional parts of the GUI.
+        """
+        self.menu_bar = QMenuBar()
+        # TODO add translations
+        tools_menu = self.menu_bar.addMenu("Settings")
+        tools_menu.addAction("Open Presets Manager")
+
+        self.setMenuBar(self.menu_bar)
+
+    def _build_status_bar(self):
+        self.status_bar = QStatusBar()
+        self.status_bar.showMessage("Respirator <status>")
+        self.setStatusBar(self.status_bar)
 
     def _build_numerical_instrument_view(self):
         """
         Builds the part of the main view containing the numerical instruments.
         """
-
+        # TODO add translations
         self.animal_temp_instrument = NumericalInstrument("Temperatur Tier [°C]")
         self.heatbed_temp_instrument = NumericalInstrument("Temperatur Heizplatte [°C]")
         self.air_temp_instrument = NumericalInstrument("Temperatur Luft [°C]")
