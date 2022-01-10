@@ -1,4 +1,5 @@
 from src.view.instrumentView import NumericalInstrument
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QGridLayout, QLabel, QMainWindow, QWidget, QMenuBar, QStatusBar
 
 
@@ -37,11 +38,12 @@ class RespiratorMainWindow(QMainWindow):
         Builds the top menu bar for accessing different functional parts of the GUI.
         """
         self.menu_bar = QMenuBar()
-        # TODO add translations
-        tools_menu = self.menu_bar.addMenu("Settings")
-        tools_menu.addAction("Open Presets Manager")
-
         self.setMenuBar(self.menu_bar)
+        # TODO add translations
+        # Mark ALT key shortcuts with an "&" sign
+        tools_menu = self.menu_bar.addMenu("&Einstellungen")
+        self.open_presets_action = QAction("Beatmungs-&Voreinstellungen...")
+        tools_menu.addAction(self.open_presets_action)
 
     def _build_status_bar(self):
         self.status_bar = QStatusBar()

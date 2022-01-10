@@ -27,7 +27,8 @@ if __name__ == "__main__":
     main_window.show()
 
     p = PresetsViewWindow()
-    p.show()
+
+    main_window.open_presets_action.triggered.connect(p.show)
 
     model.modified_air_temp_data.connect(main_window.air_temp_instrument.on_modified_data)
     model.modified_air_pressure_data.connect(main_window.pressure_inspiration_instrument.on_modified_data)

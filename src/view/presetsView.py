@@ -27,12 +27,12 @@ class PresetsViewWindow(QWidget):
     """
     Window for visualizing the respiration presets table including buttons for user interaction.
     """
-
+    # TODO add translations
     presets_table = PresetsTableView
 
     def __init__(self):
         super(PresetsViewWindow, self).__init__()
-        self.setWindowTitle("Respiration Presets")
+        self.setWindowTitle("Beatmungs-Voreinstellungen")
         self.setMinimumSize(600, 200)
 
         self._build_presets_view_window()
@@ -48,9 +48,9 @@ class PresetsViewWindow(QWidget):
 
         # Buttons for handling presets
         self.send_preset_button = QPushButton()
-        self.send_preset_button.setText("Send Preset to Respirator")
+        self.send_preset_button.setText("Voreinstellung an Beatmungsgerät senden")
         self.add_preset_button = QPushButton()
-        self.add_preset_button.setText("Add new Preset")
+        self.add_preset_button.setText("Neue Voreinstellung erstellen")
 
         main_layout.addLayout(button_layout)
         button_layout.addWidget(self.add_preset_button)
