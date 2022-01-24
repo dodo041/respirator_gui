@@ -30,6 +30,9 @@ class SensorModelSignals(QObject):
 
 
 class SensorDataModel(QObject):
+    """
+    Model for sensor related data.
+    """
 
     # Signals
     modified_air_pressure_data = Signal(float)
@@ -41,16 +44,16 @@ class SensorDataModel(QObject):
     modified_relative_humidity_data = Signal(float)
 
     # Data queues
-    air_pressure_data = Deque
-    air_temp_data = Deque
-    animal_temp_data = Deque
-    heatbed_temp_data = Deque
-    eCO2_data = Deque
-    eTVOC_data = Deque
-    relative_humidity_data = Deque
+    _air_pressure_data = Deque
+    _air_temp_data = Deque
+    _animal_temp_data = Deque
+    _heatbed_temp_data = Deque
+    _eCO2_data = Deque
+    _eTVOC_data = Deque
+    _relative_humidity_data = Deque
 
-    min_pressure_border = float
-    max_pressure_border = float
+    _min_pressure_border = float
+    _max_pressure_border = float
 
     def __init__(self):
         """
@@ -60,55 +63,105 @@ class SensorDataModel(QObject):
         super(SensorDataModel, self).__init__()
 
         # Queues (dequeues) with sensor data
-        self.air_pressure_data = deque()
-        self.air_temp_data = deque()
-        self.animal_temp_data = deque()
-        self.heatbed_temp_data = deque()
-        self.eCO2_data = deque()
-        self.eTVOC_data = deque()
-        self.relative_humidity_data = deque()
+        self._air_pressure_data = deque()
+        self._air_temp_data = deque()
+        self._animal_temp_data = deque()
+        self._heatbed_temp_data = deque()
+        self._eCO2_data = deque()
+        self._eTVOC_data = deque()
+        self._relative_humidity_data = deque()
 
         # Borders for pressure alarm
-        self.min_pressure_border = float()
-        self.max_pressure_border = float()
+        self._min_pressure_border = float()
+        self._max_pressure_border = float()
 
-    # Methods for writing data to specific sensor model
-    # TODO maybe there's a more elegant way of doing this to avoid code duplication? e.g. binding signals to model?
+    # Global getters and setters
 
-    def write_air_pressure_data(self, data: float):
-        self._cut_long_queue(self.air_pressure_data, MAX_QUEUE_LENGTH)
-        self.air_pressure_data.append(data)
+    @property
+    def air_pressure_data(self) -> deque:
+        return self._air_pressure_data
+
+    @air_pressure_data.setter
+    def air_pressure_data(self, data: float):
+        self._cut_long_queue(self._air_pressure_data, MAX_QUEUE_LENGTH)
+        self._air_pressure_data.append(data)
         self.modified_air_pressure_data.emit(data)
 
-    def write_air_temp_data(self, data: float):
-        self._cut_long_queue(self.air_temp_data, MAX_QUEUE_LENGTH)
-        self.air_temp_data.append(data)
+    @property
+    def air_temp_data(self) -> deque:
+        return self._air_temp_data
+
+    @air_temp_data.setter
+    def air_temp_data(self, data: float):
+        self._cut_long_queue(self._air_temp_data, MAX_QUEUE_LENGTH)
+        self._air_temp_data.append(data)
         self.modified_air_temp_data.emit(data)
 
-    def write_animal_temp_data(self, data: float):
-        self._cut_long_queue(self.animal_temp_data, MAX_QUEUE_LENGTH)
-        self.animal_temp_data.append(data)
+    @property
+    def animal_temp_data(self) -> deque:
+        return self._animal_temp_data
+
+    @animal_temp_data.setter
+    def animal_temp_data(self, data: float):
+        self._cut_long_queue(self._animal_temp_data, MAX_QUEUE_LENGTH)
+        self._animal_temp_data.append(data)
         self.modified_animal_temp_data.emit(data)
 
-    def write_heatbed_temp_data(self, data: float):
-        self._cut_long_queue(self.heatbed_temp_data, MAX_QUEUE_LENGTH)
-        self.heatbed_temp_data.append(data)
+    @property
+    def heatbed_temp_data(self) -> deque:
+        return self._heatbed_temp_data
+
+    @heatbed_temp_data.setter
+    def heatbed_temp_data(self, data: float):
+        self._cut_long_queue(self._heatbed_temp_data, MAX_QUEUE_LENGTH)
+        self._heatbed_temp_data.append(data)
         self.modified_heatbed_temp_data.emit(data)
 
-    def write_eTVOC_data(self, data: float):
-        self._cut_long_queue(self.eTVOC_data, MAX_QUEUE_LENGTH)
-        self.eTVOC_data.append(data)
-        self.modified_eTVOC_data.emit(data)
+    @property
+    def eCO2_data(self) -> deque:
+        return self._eCO2_data
 
-    def write_eCO2_data(self, data: float):
-        self._cut_long_queue(self.eCO2_data, MAX_QUEUE_LENGTH)
-        self.eCO2_data.append(data)
+    @eCO2_data.setter
+    def eCO2_data(self, data: float):
+        self._cut_long_queue(self._eCO2_data, MAX_QUEUE_LENGTH)
+        self._eCO2_data.append(data)
         self.modified_eCO2_data.emit(data)
 
-    def write_relative_humidity_data(self, data: float):
-        self._cut_long_queue(self.relative_humidity_data, MAX_QUEUE_LENGTH)
-        self.relative_humidity_data.append(data)
+    @property
+    def eTVOC_data(self) -> deque:
+        return self._eTVOC_data
+
+    @eTVOC_data.setter
+    def eTVOC_data(self, data: float):
+        self._cut_long_queue(self._eTVOC_data, MAX_QUEUE_LENGTH)
+        self._eTVOC_data.append(data)
+        self.modified_eTVOC_data.emit(data)
+
+    @property
+    def relative_humidity_data(self) -> deque:
+        return self._relative_humidity_data
+
+    @relative_humidity_data.setter
+    def relative_humidity_data(self, data: float):
+        self._cut_long_queue(self._relative_humidity_data, MAX_QUEUE_LENGTH)
+        self._relative_humidity_data.append(data)
         self.modified_relative_humidity_data.emit(data)
+
+    @property
+    def min_pressure_border(self) -> float:
+        return self._min_pressure_border
+
+    @min_pressure_border.setter
+    def min_pressure_border(self, min_pressure: float):
+        self._min_pressure_border = min_pressure
+
+    @property
+    def max_pressure_border(self) -> float:
+        return self._max_pressure_border
+
+    @max_pressure_border.setter
+    def max_pressure_border(self, max_pressure: float):
+        self._max_pressure_border = max_pressure
 
     @staticmethod
     def _cut_long_queue(queue: Deque, max_queue_length: int) -> None:
