@@ -1,3 +1,5 @@
+import time
+from collections import deque
 from PySide6.QtCore import QSize, Slot
 from PySide6.QtWidgets import QLCDNumber, QLabel, QVBoxLayout, QWidget, QSizePolicy
 from pyqtgraph import PlotWidget, PlotItem, PlotDataItem, DateAxisItem
@@ -142,3 +144,23 @@ class GraphInstrument(QWidget):
         :return: Preferred size of the GraphInstrument widget.
         """
         return QSize(self._min_height * 3, self._min_height)
+
+    @Slot(deque)
+    def on_modified_data(self, data: deque):
+        times = []
+        values = []
+
+        last_n = deque()
+        index = -self._MAX_VALUES
+        if len(data) > self._MAX_VALUES:
+            for n in range(self._MAX_VALUES):
+                last_n.append(data[index])
+                index += 1
+        else:
+            last_n = data
+
+        for data_point in last_n:
+            values.append(data_point[0])
+            times.append(time.mktime(data_point[1].timetuple()))
+
+        self._graph_data.setData(x=times, y=values)
