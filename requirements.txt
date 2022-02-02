@@ -1,2 +1,3 @@
-pyside6
+pyside6==6.2.1 # Use version 6.2.1 because of conflict between PyQt/Pyside6 6.2.2 and pyqtgraph (https://github.com/pyqtgraph/pyqtgraph/pull/2132)
 pyserial
+pyqtgraph

@@ -1,5 +1,6 @@
 from PySide6.QtCore import QSize, Slot
 from PySide6.QtWidgets import QLCDNumber, QLabel, QVBoxLayout, QWidget, QSizePolicy
+from pyqtgraph import PlotWidget, PlotItem, PlotDataItem, DateAxisItem
 
 
 class NumericalInstrument(QWidget):
@@ -78,3 +79,64 @@ class NumericalInstrument(QWidget):
         :return: None
         """
         self._lcd.display(value)
+
+
+class GraphInstrument(QWidget):
+    """
+    Instrument for displaying data as a graph in a cartesian coordinate system.
+    """
+    _MAX_VALUES = 120
+    _min_height = 150
+    _inner_layout = QVBoxLayout
+    _plot_widget = PlotWidget
+    _graph_data = PlotDataItem
+
+    def __init__(self):
+        super(GraphInstrument, self).__init__()
+        self._build_graph_instrument()
+        if __debug__:
+            self.setStyleSheet("border: 1px solid blue;")
+
+    def _build_graph_instrument(self) -> None:
+        """
+        Build the GraphInstrument. Doing this (and especially updating the graph afterwards) natively with PyQt is
+        absolute pain, therefore it's done with pyqtgraph, which leaves us with softer pain.
+
+        :return: None
+        """
+        # Native PyQt wrapper for inner contents of GraphInstrument (might be handy for later extension)
+        wrap_layout = QVBoxLayout(self)
+        wrap = QWidget()
+        wrap_layout.addWidget(wrap)
+        # Inner layout with actual contents
+        self._inner_layout = QVBoxLayout(wrap)
+
+        """
+        For pyqtgraph plot structure consider https://pyqtgraph.readthedocs.io/en/latest/plotting.html
+        """
+        # x-axis shall display datetime information for each y-value
+        x_axis = DateAxisItem()
+        # The PlotDataItem contains and manages the actual data to be displayed
+        self._graph_data = PlotDataItem()
+        # The PlotItem contains all graph-related widgets (graph itself, axes, labels, etc.)
+        _graph = PlotItem(axisItems={"bottom": x_axis}, enableMenu=False)
+        _graph.showGrid(True, True, 0.4)
+        _graph.addItem(self._graph_data)
+
+        # pyqtgraph container for the graph which we can embed in our PyQt GUI
+        _plot_widget = PlotWidget(background="white", plotItem=_graph)
+        _plot_widget.setAntialiasing(True)
+
+        self._inner_layout.addWidget(_plot_widget)
+
+        # GraphInstrument should shall not exceed given size hint
+        graph_instr_sp = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        self.setSizePolicy(graph_instr_sp)
+
+    def sizeHint(self) -> QSize:
+        """
+        Reimplementation of PyQt sizeHint.
+
+        :return: Preferred size of the GraphInstrument widget.
+        """
+        return QSize(self._min_height * 3, self._min_height)
