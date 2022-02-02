@@ -70,14 +70,16 @@ class NumericalInstrument(QWidget):
         num_instr_sp = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         self.setSizePolicy(num_instr_sp)
 
-    @Slot(float)
-    def on_modified_data(self, value: float) -> None:
+    @Slot(deque)
+    def on_modified_data(self, data: deque) -> None:
         """
         Update value on LCD display.
 
-        :param value: Data emitted from signal
+        :param data: Data as tuples of (value, datetime) to be displayed
         :return: None
         """
+        # Get youngest (last) entry from sensor data deque and display the value in LCD
+        value = data[-1][0]
         self._lcd.display(value)
 
 

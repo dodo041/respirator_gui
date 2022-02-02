@@ -1,5 +1,5 @@
-from typing import Deque
 from collections import deque
+from datetime import datetime
 from PySide6.QtCore import QObject, Signal
 
 MAX_QUEUE_LENGTH = 1000
@@ -35,22 +35,22 @@ class SensorDataModel(QObject):
     """
 
     # Signals
-    modified_air_pressure_data = Signal(float)
-    modified_air_temp_data = Signal(float)
-    modified_animal_temp_data = Signal(float)
-    modified_heatbed_temp_data = Signal(float)
-    modified_eTVOC_data = Signal(float)
-    modified_eCO2_data = Signal(float)
-    modified_relative_humidity_data = Signal(float)
+    modified_air_pressure_data = Signal(deque)
+    modified_air_temp_data = Signal(deque)
+    modified_animal_temp_data = Signal(deque)
+    modified_heatbed_temp_data = Signal(deque)
+    modified_eTVOC_data = Signal(deque)
+    modified_eCO2_data = Signal(deque)
+    modified_relative_humidity_data = Signal(deque)
 
     # Data queues
-    _air_pressure_data = Deque
-    _air_temp_data = Deque
-    _animal_temp_data = Deque
-    _heatbed_temp_data = Deque
-    _eCO2_data = Deque
-    _eTVOC_data = Deque
-    _relative_humidity_data = Deque
+    _air_pressure_data = deque
+    _air_temp_data = deque
+    _animal_temp_data = deque
+    _heatbed_temp_data = deque
+    _eCO2_data = deque
+    _eTVOC_data = deque
+    _relative_humidity_data = deque
 
     _min_pressure_border = float
     _max_pressure_border = float
@@ -62,7 +62,7 @@ class SensorDataModel(QObject):
         """
         super(SensorDataModel, self).__init__()
 
-        # Queues (dequeues) with sensor data
+        # deques with sensor data: tuple of (sensor value, datetime timestamp)
         self._air_pressure_data = deque()
         self._air_temp_data = deque()
         self._animal_temp_data = deque()
@@ -84,8 +84,8 @@ class SensorDataModel(QObject):
     @air_pressure_data.setter
     def air_pressure_data(self, data: float):
         self._cut_long_queue(self._air_pressure_data, MAX_QUEUE_LENGTH)
-        self._air_pressure_data.append(data)
-        self.modified_air_pressure_data.emit(data)
+        self._air_pressure_data.append((data, datetime.now()))
+        self.modified_air_pressure_data.emit(self._air_pressure_data)
 
     @property
     def air_temp_data(self) -> deque:
@@ -94,8 +94,8 @@ class SensorDataModel(QObject):
     @air_temp_data.setter
     def air_temp_data(self, data: float):
         self._cut_long_queue(self._air_temp_data, MAX_QUEUE_LENGTH)
-        self._air_temp_data.append(data)
-        self.modified_air_temp_data.emit(data)
+        self._air_temp_data.append((data, datetime.now()))
+        self.modified_air_temp_data.emit(self._air_temp_data)
 
     @property
     def animal_temp_data(self) -> deque:
@@ -104,8 +104,8 @@ class SensorDataModel(QObject):
     @animal_temp_data.setter
     def animal_temp_data(self, data: float):
         self._cut_long_queue(self._animal_temp_data, MAX_QUEUE_LENGTH)
-        self._animal_temp_data.append(data)
-        self.modified_animal_temp_data.emit(data)
+        self._animal_temp_data.append((data, datetime.now()))
+        self.modified_animal_temp_data.emit(self._animal_temp_data)
 
     @property
     def heatbed_temp_data(self) -> deque:
@@ -114,8 +114,8 @@ class SensorDataModel(QObject):
     @heatbed_temp_data.setter
     def heatbed_temp_data(self, data: float):
         self._cut_long_queue(self._heatbed_temp_data, MAX_QUEUE_LENGTH)
-        self._heatbed_temp_data.append(data)
-        self.modified_heatbed_temp_data.emit(data)
+        self._heatbed_temp_data.append((data, datetime.now()))
+        self.modified_heatbed_temp_data.emit(self.heatbed_temp_data)
 
     @property
     def eCO2_data(self) -> deque:
@@ -124,8 +124,8 @@ class SensorDataModel(QObject):
     @eCO2_data.setter
     def eCO2_data(self, data: float):
         self._cut_long_queue(self._eCO2_data, MAX_QUEUE_LENGTH)
-        self._eCO2_data.append(data)
-        self.modified_eCO2_data.emit(data)
+        self._eCO2_data.append((data, datetime.now()))
+        self.modified_eCO2_data.emit(self._eCO2_data)
 
     @property
     def eTVOC_data(self) -> deque:
@@ -134,8 +134,8 @@ class SensorDataModel(QObject):
     @eTVOC_data.setter
     def eTVOC_data(self, data: float):
         self._cut_long_queue(self._eTVOC_data, MAX_QUEUE_LENGTH)
-        self._eTVOC_data.append(data)
-        self.modified_eTVOC_data.emit(data)
+        self._eTVOC_data.append((data, datetime.now()))
+        self.modified_eTVOC_data.emit(self._eTVOC_data)
 
     @property
     def relative_humidity_data(self) -> deque:
@@ -144,8 +144,8 @@ class SensorDataModel(QObject):
     @relative_humidity_data.setter
     def relative_humidity_data(self, data: float):
         self._cut_long_queue(self._relative_humidity_data, MAX_QUEUE_LENGTH)
-        self._relative_humidity_data.append(data)
-        self.modified_relative_humidity_data.emit(data)
+        self._relative_humidity_data.append((data, datetime.now()))
+        self.modified_relative_humidity_data.emit(self._relative_humidity_data)
 
     @property
     def min_pressure_border(self) -> float:
@@ -164,7 +164,7 @@ class SensorDataModel(QObject):
         self._max_pressure_border = max_pressure
 
     @staticmethod
-    def _cut_long_queue(queue: Deque, max_queue_length: int) -> None:
+    def _cut_long_queue(queue: deque, max_queue_length: int) -> None:
         """
         Shortens a deque type queue in case it exceeds a maximum length (oldest queue entry is being removed).
 
