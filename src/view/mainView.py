@@ -1,9 +1,12 @@
-from src.view.instrumentView import NumericalInstrument
+from src.view.instrumentView import NumericalInstrument, GraphInstrument
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QGridLayout, QLabel, QMainWindow, QWidget, QMenuBar, QStatusBar
+from PySide6.QtWidgets import QGridLayout, QMainWindow, QWidget, QMenuBar, QStatusBar
 
 
 class RespiratorMainWindow(QMainWindow):
+    """
+    Main Window of the respirator GUI application.
+    """
 
     menu_bar = QMenuBar
     status_bar = QStatusBar
@@ -31,7 +34,7 @@ class RespiratorMainWindow(QMainWindow):
 
         self._build_menu_bar()
         self._build_status_bar()
-        self._build_numerical_instrument_view()
+        self._build_instrument_view()
 
     def _build_menu_bar(self):
         """
@@ -50,38 +53,52 @@ class RespiratorMainWindow(QMainWindow):
         self.status_bar.showMessage("Respirator <status>")
         self.setStatusBar(self.status_bar)
 
-    def _build_numerical_instrument_view(self):
+    def _build_instrument_view(self):
         """
         Builds the part of the main view containing the numerical instruments.
         """
         # TODO add translations
+        # Create all numerical and graph instrument widgets
         self.animal_temp_instrument = NumericalInstrument("Temperatur Tier [°C]")
+        self.animal_temp_graph = GraphInstrument()
+
         self.heatbed_temp_instrument = NumericalInstrument("Temperatur Heizplatte [°C]")
+        self.heatbed_temp_graph = GraphInstrument()
+
         self.air_temp_instrument = NumericalInstrument("Temperatur Luft [°C]")
+        self.air_temp_graph = GraphInstrument()
+
         self.pressure_inspiration_instrument = NumericalInstrument("Druck Inspirationskammer [psi]")
+        self.pressure_inspiration_graph = GraphInstrument()
+
         self.eTVOC_instrument = NumericalInstrument("eTVOC [1]")
+        self.eTVOC_graph = GraphInstrument()
+
         self.eCO2_instrument = NumericalInstrument("eCO2 [1]")
+        self.eCO2_graph = GraphInstrument()
+
         self.relative_humidity_instrument = NumericalInstrument("Luftfeuchtigkeit [%]")
+        self.relative_humidity_graph = GraphInstrument()
 
-        # First (instrument) column
-        self.num_instruments_layout.addWidget(QLabel("Temperatur"), 0, 0)
-        self.num_instruments_layout.addWidget(self.animal_temp_instrument, 1, 0)
-        self.num_instruments_layout.addWidget(self.heatbed_temp_instrument, 2, 0)
-        self.num_instruments_layout.addWidget(self.air_temp_instrument, 3, 0)
-        # Third (instrument) column
-        self.num_instruments_layout.addWidget(QLabel("Luftqualität"), 0, 1)
-        self.num_instruments_layout.addWidget(self.eTVOC_instrument, 1, 1)
-        self.num_instruments_layout.addWidget(self.eCO2_instrument, 2, 1)
-        self.num_instruments_layout.addWidget(self.relative_humidity_instrument, 3, 1)
-        # Fifth (instrument) column
-        self.num_instruments_layout.addWidget(QLabel("Druck"), 0, 2)
-        self.num_instruments_layout.addWidget(self.pressure_inspiration_instrument, 1, 2)
+        # Set first two columns of instruments
+        self.num_instruments_layout.addWidget(self.animal_temp_instrument, 0, 0)
+        self.num_instruments_layout.addWidget(self.animal_temp_graph, 0, 1)
 
-        # Set stretch factors to account for different widget sizes in the grid cells
-        # self.numericalInstrumentsLayout.setRowStretch(0, 0)
-        self.num_instruments_layout.setRowStretch(1, 1)
-        self.num_instruments_layout.setRowStretch(2, 1)
-        self.num_instruments_layout.setRowStretch(3, 1)
-        self.num_instruments_layout.setColumnStretch(0, 1)
-        self.num_instruments_layout.setColumnStretch(1, 1)
-        self.num_instruments_layout.setColumnStretch(2, 1)
+        self.num_instruments_layout.addWidget(self.heatbed_temp_instrument, 1, 0)
+        self.num_instruments_layout.addWidget(self.heatbed_temp_graph, 1, 1)
+
+        self.num_instruments_layout.addWidget(self.air_temp_instrument, 2, 0)
+        self.num_instruments_layout.addWidget(self.air_temp_graph, 2, 1)
+
+        self.num_instruments_layout.addWidget(self.pressure_inspiration_instrument, 3, 0)
+        self.num_instruments_layout.addWidget(self.pressure_inspiration_graph, 3, 1)
+
+        # Set second two column of instruments
+        self.num_instruments_layout.addWidget(self.eTVOC_instrument, 0, 2)
+        self.num_instruments_layout.addWidget(self.eTVOC_graph, 0, 3)
+
+        self.num_instruments_layout.addWidget(self.eCO2_instrument, 1, 2)
+        self.num_instruments_layout.addWidget(self.eCO2_graph, 1, 3)
+
+        self.num_instruments_layout.addWidget(self.relative_humidity_instrument, 2, 2)
+        self.num_instruments_layout.addWidget(self.relative_humidity_graph, 2, 3)

@@ -14,17 +14,30 @@ class MainController:
     def __init__(self, sensor_model: SensorDataModel, view: RespiratorMainWindow):
         self._model = sensor_model
         self._view = view
-        self._connect_signals()
+        self._connect_instrument_signals()
 
-    def _connect_signals(self):
+    def _connect_instrument_signals(self):
         # Connect "modified data" signals to corresponding numerical instruments
-        self._model.modified_eTVOC_data.connect(self._view.eTVOC_instrument.on_modified_data)
-        self._model.modified_eCO2_data.connect(self._view.eCO2_instrument.on_modified_data)
         self._model.modified_animal_temp_data.connect(self._view.animal_temp_instrument.on_modified_data)
-        self._model.modified_air_temp_data.connect(self._view.air_temp_instrument.on_modified_data)
+        self._model.modified_animal_temp_data.connect(self._view.animal_temp_graph.on_modified_data)
+
         self._model.modified_heatbed_temp_data.connect(self._view.heatbed_temp_instrument.on_modified_data)
-        self._model.modified_relative_humidity_data.connect(self._view.relative_humidity_instrument.on_modified_data)
+        self._model.modified_heatbed_temp_data.connect(self._view.heatbed_temp_graph.on_modified_data)
+
+        self._model.modified_air_temp_data.connect(self._view.air_temp_instrument.on_modified_data)
+        self._model.modified_air_temp_data.connect(self._view.air_temp_graph.on_modified_data)
+
         self._model.modified_air_pressure_data.connect(self._view.pressure_inspiration_instrument.on_modified_data)
+        self._model.modified_air_pressure_data.connect(self._view.pressure_inspiration_graph.on_modified_data)
+
+        self._model.modified_eTVOC_data.connect(self._view.eTVOC_instrument.on_modified_data)
+        self._model.modified_eTVOC_data.connect(self._view.eTVOC_graph.on_modified_data)
+
+        self._model.modified_eCO2_data.connect(self._view.eCO2_instrument.on_modified_data)
+        self._model.modified_eCO2_data.connect(self._view.eCO2_graph.on_modified_data)
+
+        self._model.modified_relative_humidity_data.connect(self._view.relative_humidity_instrument.on_modified_data)
+        self._model.modified_relative_humidity_data.connect(self._view.relative_humidity_graph.on_modified_data)
 
     def write_random_data(self):
         self._model.air_temp_data = uniform(29, 32)
