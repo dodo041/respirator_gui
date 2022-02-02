@@ -121,15 +121,16 @@ class GraphInstrument(QWidget):
         # x-axis shall display datetime information for each y-value
         x_axis = DateAxisItem()
         # The PlotDataItem contains and manages the actual data to be displayed
-        self._graph_data = PlotDataItem()
+        self._graph_data = PlotDataItem(pen={"color": "#0088FF", "width": 1.5}, antialias=True)
         # The PlotItem contains all graph-related widgets (graph itself, axes, labels, etc.)
         _graph = PlotItem(axisItems={"bottom": x_axis}, enableMenu=False)
         _graph.showGrid(True, True, 0.4)
         _graph.addItem(self._graph_data)
 
         # pyqtgraph container for the graph which we can embed in our PyQt GUI
-        _plot_widget = PlotWidget(background="white", plotItem=_graph)
+        _plot_widget = PlotWidget(background="#00000000", plotItem=_graph)  # Set background (#RRGGBBAA) transparent
         _plot_widget.setAntialiasing(True)
+        _plot_widget.plotItem.setMouseEnabled(x=True, y=False)  # Allow zooming only along the x-axis
 
         self._inner_layout.addWidget(_plot_widget)
 
@@ -146,10 +147,19 @@ class GraphInstrument(QWidget):
         return QSize(self._min_height * 3, self._min_height)
 
     @Slot(deque)
-    def on_modified_data(self, data: deque):
+    def on_modified_data(self, data: deque) -> None:
+        """
+        Update data to be displayed in GraphInstrument. Setting the data automatically redraws the graph.
+
+        :param data: Data as tuple of (value, datetime) to be plotted in the GraphInstrument
+        :return: None
+        """
         times = []
         values = []
 
+        # TODO room for optimization here: maybe taking the last N data points can be avoided by MAX_QUEUE_LENGTH in
+        # the SensorDataModel, and just plotting all data + scaling axes might be faster than doing this, especially in
+        # high throughput scenarios
         last_n = deque()
         index = -self._MAX_VALUES
         if len(data) > self._MAX_VALUES:
