@@ -1,5 +1,5 @@
+import logging
 from configparser import ConfigParser, DuplicateSectionError
-
 from PySide6.QtCore import Qt, QAbstractTableModel, QModelIndex
 
 presets_filepath = "assets/respiration_presets.ini"
@@ -43,6 +43,7 @@ class RespirationPresetsModel:
     presets = ConfigParser
 
     def __init__(self):
+        logging.debug("Creating new respiration presets model")
         self._load_presets_from_file(presets_filepath)
 
     def _load_presets_from_file(self, filepath: str) -> None:
@@ -67,8 +68,9 @@ class RespirationPresetsModel:
         # Check if entry to be created already exists
         try:
             self.presets.add_section(identifier)
+            logging.debug(f"Created new respiration preset {identifier}")
         except DuplicateSectionError:
-            print(f"\nPreset could not be created: Entry {identifier} already exists in file.")
+            logging.error(f"\nPreset could not be created: Entry {identifier} already exists in file.")
             return False
         else:
             # TODO Maybe add validation of the preset values?
@@ -80,6 +82,7 @@ class RespirationPresetsModel:
             self.presets[identifier]["i_to_e_ratio"] = str(ie_ratio)
 
         # Write preset to file
+        logging.info(f"Saved new respiration preset to {presets_filepath}")
         with open(file=presets_filepath, mode="w") as presets_file:
             self.presets.write(fp=presets_file)
             return True
@@ -108,6 +111,7 @@ class PresetsTableModel(QAbstractTableModel):
         :param presets_model:
         :param language: Identifier for translation language (e.g. "de" for German, "en" for English)
         """
+        logging.debug("Creating new native PyQt table model for respiration presets")
         super(PresetsTableModel, self).__init__()
 
         self._raw_model = presets_model  # This is not the model which is consumed by the TableView!

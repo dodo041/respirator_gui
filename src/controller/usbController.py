@@ -1,3 +1,4 @@
+import logging
 from serial import Serial
 from serial.tools import list_ports
 from serial.serialutil import SerialException
@@ -21,11 +22,14 @@ def _find_pico_com_port() -> str | None:
     """
     # TODO maybe add retry mechanism, user should also be able to trigger it himself if necessary
     # TODO (e.g. when connection is lost after it was established before)
+    logging.info("Scanning serial ports on device")
     for port in list_ports.comports():
         if port.vid == PICO_VENDOR_ID and port.pid == PICO_CDC_PRODUCT_ID:
-            print(f"Found Raspberry Pi Pico at {port.name}")
+            logging.info(f"Found Raspberry Pi Pico at {port.name}")
             return port.name
         else:
+            logging.warning("Could not find Raspberry Pi Pico connected to your device. Please check the connection "
+                            "and try again.")
             return None
 
 
@@ -38,6 +42,7 @@ class PicoUSBController:
     _PICO_COM_PORT = ""
 
     def __init__(self):
+        logging.debug("Creating new USB controller for Raspberry Pi Pico")
         self._PICO_COM_PORT = _find_pico_com_port()
 
         if self._PICO_COM_PORT is not None and not "":
@@ -49,7 +54,9 @@ class PicoUSBController:
 
     def read_from_pico(self) -> bytes:
         data = self._serial_controller.readline(READ_BUFFER_SIZE)
+        logging.debug(f"Read data from Raspberry Pi Pico: {data}")
         return data
 
     def write_to_pico(self, data) -> None:
+        logging.debug(f"Sent data from Raspberry Pi Pico: {data}")
         self._serial_controller.write(data)

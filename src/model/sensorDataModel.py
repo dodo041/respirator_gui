@@ -1,3 +1,4 @@
+import logging
 from collections import deque
 from datetime import datetime
 from PySide6.QtCore import QObject, Signal
@@ -60,6 +61,7 @@ class SensorDataModel(QObject):
         The sensor data model consists of independent queues (of type collection.deque). That way reading one sensor
         value from the queue does not depend on another value, which was recorded at the same time instance.
         """
+        logging.debug("Creating new sensor data model")
         super(SensorDataModel, self).__init__()
 
         # deques with sensor data: tuple of (sensor value, datetime timestamp)

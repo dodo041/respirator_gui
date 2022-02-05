@@ -1,3 +1,4 @@
+import logging
 from random import randrange, uniform
 from src.view.mainView import RespiratorMainWindow
 from src.model.sensorDataModel import SensorDataModel
@@ -12,11 +13,13 @@ class MainController:
     _view = RespiratorMainWindow
 
     def __init__(self, sensor_model: SensorDataModel, view: RespiratorMainWindow):
+        logging.debug("Creating new MVC main controller")
         self._model = sensor_model
         self._view = view
         self._connect_instrument_signals()
 
     def _connect_instrument_signals(self):
+        logging.debug("Connecting PyQt signals to slots for instrument widgets")
         # Connect "modified data" signals to corresponding numerical instruments
         self._model.modified_animal_temp_data.connect(self._view.animal_temp_instrument.on_modified_data)
         self._model.modified_animal_temp_data.connect(self._view.animal_temp_graph.on_modified_data)

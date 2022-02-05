@@ -1,3 +1,4 @@
+import logging
 from src.model.presetsModel import PresetsTableModel, RespirationPresetsModel
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableView, QAbstractItemView, QPushButton
 
@@ -8,9 +9,11 @@ class PresetsTableView(QTableView):
     """
 
     def __init__(self):
+        logging.debug("Initialising presets table view")
         super(PresetsTableView, self).__init__()
 
         # Set the TableView model
+        logging.debug("Setting PyQt TableView model from respiration presets model")
         self._presets_model = RespirationPresetsModel()
         self._table_model = PresetsTableModel(self._presets_model)
         self.setModel(self._table_model)
@@ -31,6 +34,7 @@ class PresetsViewWindow(QWidget):
     presets_table = PresetsTableView
 
     def __init__(self):
+        logging.debug("Initialising presets view window")
         super(PresetsViewWindow, self).__init__()
         self.setWindowTitle("Beatmungs-Voreinstellungen")
         self.setMinimumSize(600, 200)

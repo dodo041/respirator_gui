@@ -1,4 +1,5 @@
 import time
+import logging
 from collections import deque
 from PySide6.QtCore import QSize, Slot
 from PySide6.QtWidgets import QLCDNumber, QLabel, QVBoxLayout, QWidget, QSizePolicy
@@ -16,6 +17,7 @@ class NumericalInstrument(QWidget):
     _instrument_title = str
 
     def __init__(self, instrument_label: str):
+        logging.debug("Creating new numerical instrument widget")
         super(NumericalInstrument, self).__init__()
         self._build_numerical_instrument(instrument_label)
 
@@ -96,6 +98,7 @@ class GraphInstrument(QWidget):
     _graph_data = PlotDataItem
 
     def __init__(self):
+        logging.debug("Creating new graph instrument widget")
         super(GraphInstrument, self).__init__()
         self._build_graph_instrument()
         if __debug__:
@@ -172,5 +175,4 @@ class GraphInstrument(QWidget):
         for data_point in last_n:
             values.append(data_point[0])
             times.append(time.mktime(data_point[1].timetuple()))
-
         self._graph_data.setData(x=times, y=values)

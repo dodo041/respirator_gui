@@ -1,3 +1,4 @@
+import logging
 from src.view.instrumentView import NumericalInstrument, GraphInstrument
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QGridLayout, QMainWindow, QWidget, QMenuBar, QStatusBar
@@ -20,6 +21,7 @@ class RespiratorMainWindow(QMainWindow):
     relative_humidity_instrument = NumericalInstrument
 
     def __init__(self):
+        logging.debug("Initialise main window")
         super(RespiratorMainWindow, self).__init__()
         self.setWindowTitle("Ventilator GUI")
         self.setMinimumSize(1000, 600)
@@ -40,6 +42,7 @@ class RespiratorMainWindow(QMainWindow):
         """
         Builds the top menu bar for accessing different functional parts of the GUI.
         """
+        logging.debug("Creating menu bar for main window")
         self.menu_bar = QMenuBar()
         self.setMenuBar(self.menu_bar)
         # TODO add translations
@@ -49,6 +52,7 @@ class RespiratorMainWindow(QMainWindow):
         tools_menu.addAction(self.open_presets_action)
 
     def _build_status_bar(self):
+        logging.debug("Creating status bar for main window")
         self.status_bar = QStatusBar()
         self.status_bar.showMessage("Respirator <status>")
         self.setStatusBar(self.status_bar)
@@ -58,6 +62,7 @@ class RespiratorMainWindow(QMainWindow):
         Builds the part of the main view containing the numerical instruments.
         """
         # TODO add translations
+        logging.debug("Creating instrument widgets")
         # Create all numerical and graph instrument widgets
         self.animal_temp_instrument = NumericalInstrument("Temperatur Tier [°C]")
         self.animal_temp_graph = GraphInstrument()
@@ -80,6 +85,7 @@ class RespiratorMainWindow(QMainWindow):
         self.relative_humidity_instrument = NumericalInstrument("Luftfeuchtigkeit [%]")
         self.relative_humidity_graph = GraphInstrument()
 
+        logging.debug("Appending instruments to main window")
         # Set first two columns of instruments
         self.num_instruments_layout.addWidget(self.animal_temp_instrument, 0, 0)
         self.num_instruments_layout.addWidget(self.animal_temp_graph, 0, 1)
