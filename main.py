@@ -2,9 +2,6 @@ import sys
 import logging
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QTimer
-from src.view.mainView import RespiratorMainWindow
-from src.view.presetsView import PresetsViewWindow
-from src.model.sensorDataModel import SensorDataModel
 from src.controller.mainController import MainController
 
 # Configure logging globally
@@ -23,21 +20,14 @@ if __debug__:
 logger.info("\n-------------- New session started --------------")
 
 logger.debug("Creating sensor data model")
-model = SensorDataModel()
 
 if __name__ == "__main__":
 
     logger.debug("Creating PyQt application")
     app = QApplication(sys.argv)
 
-    main_window = RespiratorMainWindow()
-    main_window.show()
-
-    p = PresetsViewWindow()
-
-    main_window.open_presets_action.triggered.connect(p.show)
     logger.debug("Loading main MVC controller")
-    mc = MainController(model, main_window)
+    mc = MainController()
 
     timer = QTimer()
     timer.setInterval(800)
