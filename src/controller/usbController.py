@@ -48,6 +48,7 @@ class PicoUSBController:
         if self._PICO_COM_PORT is not None and not "":
             # Initialize CDC connection to Raspberry Pi Pico
             self._serial_controller = Serial(port=self._PICO_COM_PORT, timeout=TIMEOUT)
+            logging.debug(f"Successfully initialised serial port {self._PICO_COM_PORT}")
         else:
             raise SerialException("Could not find Raspberry Pi Pico connected to your device. Please check the "
                                   "connection and try again.")
@@ -57,6 +58,13 @@ class PicoUSBController:
         logging.debug(f"Read data from Raspberry Pi Pico: {data}")
         return data
 
-    def write_to_pico(self, data) -> None:
-        logging.debug(f"Sent data from Raspberry Pi Pico: {data}")
-        self._serial_controller.write(data)
+    def write_to_pico(self, data: bytes) -> bool:
+        logging.debug(f"Sending data to Raspberry Pi Pico: {data}")
+        try:
+            self._serial_controller.write(data)
+        except SerialException:
+            logging.error(f"Could not send data to Raspberry Pi Pico: {data}")
+            return False
+        else:
+            logging.info("Successfully sent preset to Raspberry Pi Pico")
+            return True

@@ -25,6 +25,23 @@ class PresetsTableView(QTableView):
         self.resizeRowsToContents()
         self.resizeColumnsToContents()
 
+    def get_table_row_data(self) -> {}:
+        """
+        Retrieve the data of the currently selected table row directly from the native RespirationPresetsModel.
+
+        :return: Table row data (dict style).
+        """
+        data = {}
+        selected_row_index = self.currentIndex().row()
+        # Get the key/name of the selected preset using the row index
+        preset = list(self._presets_model.presets.sections())[selected_row_index]
+
+        # Loop through all presets values (options)
+        for preset_value in self._presets_model.presets.options(preset):
+            data[preset_value] = self._presets_model.presets.get(preset, preset_value)
+        logging.debug(f"Selected preset '{preset}' ({selected_row_index + 1}. row) with data {data}")
+        return data
+
 
 class PresetsViewWindow(QWidget):
     """
