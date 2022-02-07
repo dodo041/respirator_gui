@@ -31,7 +31,12 @@ if __name__ == "__main__":
 
     timer = QTimer()
     timer.setInterval(800)
-    timer.timeout.connect(mc.write_random_data)
+
+    # Use the sensor data mock if "demo" argument is given
+    if "--demo" in sys.argv:
+        timer.timeout.connect(mc.write_random_data)
+    else:
+        timer.timeout.connect(mc.read_sensor_data)
 
     while 1:
         logger.info("Running application main loop")

@@ -12,10 +12,13 @@ class MainController:
     USBController are instantiated when the MainController is instantiated.
     """
 
+    # MVC components
     _sensor_model = SensorDataModel
     _main_view = RespiratorMainWindow
     _presets_view = PresetsViewWindow
     _usb_controller = PicoUSBController
+
+    _pico_connected = False
 
     def __init__(self):
         logging.debug("Creating new MVC main controller")
@@ -94,7 +97,38 @@ class MainController:
         # TODO check for ACK signal (some char sequence) to confirm that Pico indeed successfully got the data
         return success
 
-    def write_random_data(self):
+    def read_sensor_data(self) -> None:
+        """
+        Read the sensor data from the Raspberry Pi Pico. Receiving data serves as a "health check" for the connection to
+        the Raspberry Pi Pico.
+
+        :return: None
+        """
+        connected = False
+        read_data = self._usb_controller.read_from_pico().decode("utf8")
+
+        if read_data != "":
+            connected = True
+            # The sensor data comes as one string of values which are separated by a "/".
+            # IMPORTANT NOTE: Order of the received data and the value separator is as in the Raspberry Pi Pico
+            # respirator implementation.
+            read_data = read_data.split("/")
+
+            self._sensor_model.air_temp_data = float(read_data[0])
+            self._sensor_model.relative_humidity_data = float(read_data[1])
+            self._sensor_model.eCO2_data = float(read_data[2])
+            self._sensor_model.air_pressure_data = float(read_data[3])
+            self._sensor_model.eTVOC_data = float(read_data[4])
+
+        self._pico_connected = connected
+
+    def write_random_data(self) -> None:
+        """
+        Write random data to the instrument widgets. This method can serve as a data mock for testing or demonstration
+        purposes.
+
+        :return: None
+        """
         self._sensor_model.air_temp_data = uniform(29, 32)
         self._sensor_model.air_pressure_data = uniform(25, 30)
         self._sensor_model.animal_temp_data = randrange(37, 39, 1)
