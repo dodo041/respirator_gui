@@ -163,14 +163,9 @@ class GraphInstrument(QWidget):
         # TODO room for optimization here: maybe taking the last N data points can be avoided by MAX_QUEUE_LENGTH in
         # the SensorDataModel, and just plotting all data + scaling axes might be faster than doing this, especially in
         # high throughput scenarios
-        last_n = deque()
-        index = -self._MAX_VALUES
+        last_n = list(data)
         if len(data) > self._MAX_VALUES:
-            for n in range(self._MAX_VALUES):
-                last_n.append(data[index])
-                index += 1
-        else:
-            last_n = data
+            last_n = last_n[120:]
 
         for data_point in last_n:
             values.append(data_point[0])
