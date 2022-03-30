@@ -169,5 +169,5 @@ class GraphInstrument(QWidget):
 
         for data_point in last_n:
             values.append(data_point[0])
-            times.append(time.mktime(data_point[1].timetuple()))
+            times.append(data_point[1].timestamp())
         self._graph_data.setData(x=times, y=values)
